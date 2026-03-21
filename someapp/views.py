@@ -8,3 +8,9 @@ def home(request):
 def todos(request):
     items = TodoItem.objects.all()
     return render(request, "todos.html", {"todos": items})
+
+def team(request):
+    return render(request, "team.html")
+
+def about(request):
+    return render(request, "about.html")
