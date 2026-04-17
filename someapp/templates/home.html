@@ -1,6 +1,120 @@
-{% extends "base.html" %} {% block title %} Home Page {% endblock %}
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
 {% block content %}
-<div style="display:flex; justify-content:center; align-items:center; height:80vh;">
-    <h1>Our project is currently under development. See you soon!</h1>
+
+<div style="display:flex; flex-direction:column; align-items:center; margin-top:80px;">
+
+    <h1 style="margin-bottom:40px;">Weather App</h1>
+
+    <!-- Search bar -->
+    <div style="
+        display:flex;
+        align-items:center;
+        background:white;
+        border-radius:40px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        width:500px;
+        max-width:90%;
+        padding:5px;
+    ">
+        <input 
+            id="cityInput"
+            type="text" 
+            placeholder="Search for a city..."
+            style="
+                border:none;
+                outline:none;
+                font-size:18px;
+                padding:14px 20px;
+                width:100%;
+                border-radius:40px;
+            "
+        >
+
+        <button onclick="getWeather()" style="
+            border:none;
+            background:#1e3a5f;
+            color:white;
+            padding:12px 20px;
+            border-radius:30px;
+            cursor:pointer;
+            font-size:16px;
+        ">
+            Search
+        </button>
+    </div>
+
+    <!-- Weather box-->
+    <div id="weatherBox" style="
+        display:none;
+        margin-top:30px;
+        background:white;
+        width:420px;
+        max-width:90%;
+        padding:25px;
+        border-radius:20px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.12);
+        text-align:center;
+    ">
+        <h2 id="cityName"></h2>
+        <p id="temp"></p>
+        <p id="humidity"></p>
+        <p id="wind"></p>
+        <p id="condition"></p>
+    </div>
+
 </div>
+
+<!-- Script -->
+<script>
+function getWeather() {
+    const city = document.getElementById("cityInput").value.trim();
+
+    if (city === "") {
+    alert("Please enter a city.");
+    document.getElementById("weatherBox").style.display = "none";
+    return;
+    }
+
+    let temp = "22°C";
+    let humidity = "60%";
+    let wind = "5 m/s";
+    let condition = "Sunny";
+
+    // fake różne miasta
+    if (city.toLowerCase() === "London") {
+        temp = "15°C";
+        humidity = "75%";
+        wind = "7 m/s";
+        condition = "Cloudy";
+    } else if (city.toLowerCase() === "Warszawa") {
+        temp = "18°C";
+        humidity = "55%";
+        wind = "4 m/s";
+        condition = "Partly cloudy";
+    } else if (city.toLowerCase() === "Kraków") {
+        temp = "20°C";
+        humidity = "58%";
+        wind = "3 m/s";
+        condition = "Sunny";
+    }
+
+    document.getElementById("cityName").innerText = 
+    city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
+    document.getElementById("temp").innerText = "Temperature: " + temp;
+    document.getElementById("humidity").innerText = "Humidity: " + humidity;
+    document.getElementById("wind").innerText = "Wind: " + wind;
+    document.getElementById("condition").innerText = "Condition: " + condition;
+
+    document.getElementById("weatherBox").style.display = "block";
+}
+
+document.getElementById("cityInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        getWeather();
+    }
+});
+</script>
+
 {% endblock %}
