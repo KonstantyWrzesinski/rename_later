@@ -86,6 +86,8 @@
           <li class="nav-item">
             <a class="nav-link" href="http://127.0.0.1:8000/team/">Team</a>
           </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             {%if request.user.is_authenticated %}
   			      <a class="nav-link" href="{% url 'logout' %}">Logout</a>
