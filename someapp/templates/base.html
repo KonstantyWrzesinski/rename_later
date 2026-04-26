@@ -8,7 +8,52 @@
         Django App
       {% endblock %}
     </title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            background-attachment: fixed;
+        }
+
+        nav {
+            background-color: #1e3a5f;
+            padding: 15px;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #4fc3f7;
+        }
+
+        h1 {
+            color: #1e3a5f;
+        }
+
+        button {
+            background: #1e3a5f;
+            color: white;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #16324f;
+        }
+    </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"  rel="stylesheet" />
+    <head>
+</head>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
