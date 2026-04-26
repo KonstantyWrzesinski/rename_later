@@ -15,21 +15,56 @@
     {% endif %}
   {% endif %}
 
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login">
-    <input type="hidden" name="next" value="{{ next }}">
-  </form>
+  <div style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:75vh;
+">
+
+    <div style="
+        background:white;
+        padding:40px;
+        border-radius:25px;
+        box-shadow:0 10px 25px rgba(0,0,0,0.15);
+        width:380px;
+        max-width:90%;
+    ">
+
+        <h2 style="text-align:center; margin-bottom:25px; color:#1e3a5f;">
+            Login
+        </h2>
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <div style="margin-bottom:18px;">
+                {{ form.username }}
+            </div>
+
+            <div style="margin-bottom:22px;">
+                {{ form.password }}
+            </div>
+
+            <button type="submit" style="
+                width:100%;
+                padding:14px;
+                border:none;
+                border-radius:30px;
+                background:#1e3a5f;
+                color:white;
+                font-size:16px;
+                cursor:pointer;
+            ">
+                Login
+            </button>
+
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+
+    </div>
+
+</div>
 
   
 
