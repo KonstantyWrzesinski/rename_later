@@ -5,7 +5,8 @@ from .forms import LoginForm, RegisterForm
 from django.contrib.auth.decorators import login_required
 from .forms import UserPreferenceForm
 from .models import UserPreference
-
+from django.http import JsonResponse
+from someapp.services import get_current_weather, WeatherServiceError
 
 # Create your views here.
 # def login(request):
@@ -30,7 +31,7 @@ def sign_in(request):
             if user:
                 login(request, user)
                 messages.success(request,f'Hi {username.title()}, welcome back!')
-                return redirect('login')
+                return redirect('dashboard')
         
         # either form not valid or user is not authenticated
         messages.error(request,f'Invalid username or password')
@@ -62,3 +63,36 @@ def dashboard(request):
         'form': form,
         'preference': preference
     })
+
+
+@login_required
+def dashboard_weather_api(request):
+    city = request.GET.get("city", "").strip()
+
+    if not city:
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "Nie podano miasta.",
+            },
+            status=400,
+        )
+
+    try:
+        weather = get_current_weather(city)
+    except WeatherServiceError as exc:
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": str(exc),
+            },
+            status=502,
+        )
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "weather": weather,
+        }
+    )
+    

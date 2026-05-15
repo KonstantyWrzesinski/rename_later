@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from .models import TodoItem
 from .forms import CityForm
 from .services import get_current_weather, WeatherServiceError
@@ -11,6 +12,7 @@ def home(request):
 
     if request.method == "POST" and form.is_valid():
         city = form.cleaned_data["city"]
+
         try:
             weather = get_current_weather(city)
         except WeatherServiceError as exc:
