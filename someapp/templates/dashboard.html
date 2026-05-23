@@ -186,7 +186,7 @@
 </div>
 
 <script>
-let cities = JSON.parse(localStorage.getItem("savedCities")) || [];
+let cities = [];
 let cityToDelete = null;
 let citySuggestions = [];
 let citySearchTimeout = null;
@@ -376,29 +376,52 @@ function closeAddCityModal() {
     document.getElementById("addCityModal").style.display = "none";
 }
 
-function saveCity() {
+async function saveCity() {
+
     const city = document.getElementById("cityInputModal").value.trim();
 
     if (!city) return;
 
     const selectedCity = citySuggestions.find(function(suggestion) {
-    return suggestion.displayName === city;
-});
+        return suggestion.displayName === city;
+    });
 
-const formattedCity = selectedCity
-    ? selectedCity.name
-    : formatCityName(city);
+    const formattedCity = selectedCity
+        ? selectedCity.name
+        : formatCityName(city);
 
-    if (!cities.includes(formattedCity)) {
-        cities.push(formattedCity);
-        localStorage.setItem("savedCities", JSON.stringify(cities));
+    try {
+
+        const response = await fetch("{% url 'save_city' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify({
+                city: formattedCity
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.ok) {
+
+            if (!cities.includes(formattedCity)) {
+                cities.push(formattedCity);
+            }
+
+            renderCities();
+        }
+
+    } catch(error) {
+        console.log(error);
     }
 
     document.getElementById("cityInputModal").value = "";
     document.getElementById("citySearchResults").innerHTML = "";
 
     closeAddCityModal();
-    renderCities();
 }
 
 function openDeleteCityModal(city) {
@@ -413,14 +436,37 @@ function closeDeleteCityModal() {
     document.getElementById("deleteCityModal").style.display = "none";
 }
 
-function confirmDeleteCity() {
+async function confirmDeleteCity() {
+
     if (!cityToDelete) return;
 
-    cities = cities.filter(c => c !== cityToDelete);
-    localStorage.setItem("savedCities", JSON.stringify(cities));
+    try {
+
+        const response = await fetch("{% url 'delete_city' %}", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify({
+                city: cityToDelete
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.ok) {
+
+            cities = cities.filter(c => c !== cityToDelete);
+
+            renderCities();
+        }
+
+    } catch(error) {
+        console.log(error);
+    }
 
     closeDeleteCityModal();
-    renderCities();
 }
 
 function closeWeatherCard() {
@@ -429,7 +475,39 @@ function closeWeatherCard() {
 
 document.getElementById("cityInputModal").addEventListener("input", searchCitySuggestions);
 
-renderCities();
+async function loadCities() {
+
+    try {
+        const response = await fetch("{% url 'get_saved_cities' %}");
+        const data = await response.json();
+
+        if (data.ok) {
+            cities = data.cities;
+            renderCities();
+        }
+
+    } catch(error) {
+        console.log(error);
+    }
+}
+
+loadCities();
+
+function getCSRFToken() {
+
+    const cookies = document.cookie.split(";");
+
+    for (let cookie of cookies) {
+
+        cookie = cookie.trim();
+
+        if (cookie.startsWith("csrftoken=")) {
+            return cookie.substring("csrftoken=".length);
+        }
+    }
+
+    return "";
+}
 </script>
 
 {% endblock %}

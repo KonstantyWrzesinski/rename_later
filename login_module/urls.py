@@ -7,4 +7,7 @@ urlpatterns = [
     path('register/', views.sign_up, name='register'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/weather/', views.dashboard_weather_api, name='dashboard_weather_api'),
+    path('cities/', views.get_saved_cities, name='get_saved_cities'),
+    path('cities/save/', views.save_city, name='save_city'),
+    path('cities/delete/', views.delete_city, name='delete_city'),
 ]

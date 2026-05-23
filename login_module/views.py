@@ -3,8 +3,12 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from .forms import LoginForm, RegisterForm
 from django.contrib.auth.decorators import login_required
-from .forms import UserPreferenceForm
-from .models import UserPreference
+from django.views.decorators.http import require_http_methods
+#from .forms import UserPreferenceForm
+#from .models import UserPreference
+import json
+from django.views.decorators.csrf import csrf_exempt
+from .models import SavedCity
 from django.http import JsonResponse
 from someapp.services import get_current_weather, WeatherServiceError
 
@@ -58,23 +62,25 @@ def sign_up(request):
         else:
             return render(request, 'users/register.html', {'form': form}) 
 
+#@login_required
+# def dashboard(request):
+#     preference, created = UserPreference.objects.get_or_create(user=request.user)
+
+#     if request.method == "POST":
+#         form = UserPreferenceForm(request.POST, instance=preference)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('dashboard')
+#     else:
+#         form = UserPreferenceForm(instance=preference)
+
+#     return render(request, 'dashboard.html', {
+#         'form': form,
+#         'preference': preference
+#     })
 @login_required
 def dashboard(request):
-    preference, created = UserPreference.objects.get_or_create(user=request.user)
-
-    if request.method == "POST":
-        form = UserPreferenceForm(request.POST, instance=preference)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
-    else:
-        form = UserPreferenceForm(instance=preference)
-
-    return render(request, 'dashboard.html', {
-        'form': form,
-        'preference': preference
-    })
-
+    return render(request, 'dashboard.html')
 
 @login_required
 def dashboard_weather_api(request):
@@ -106,4 +112,53 @@ def dashboard_weather_api(request):
             "weather": weather,
         }
     )
-    
+
+@login_required
+@require_http_methods(["POST"])
+def save_city(request):
+
+    data = json.loads(request.body)
+    city = data.get("city", "").strip()
+
+    if not city:
+        return JsonResponse({
+            "ok": False,
+            "error": "City is required"
+        }, status=400)
+
+    SavedCity.objects.get_or_create(
+        user=request.user,
+        city_name=city
+    )
+
+    return JsonResponse({
+        "ok": True
+    })
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_city(request):
+
+    data = json.loads(request.body)
+    city = data.get("city", "").strip()
+
+    SavedCity.objects.filter(
+        user=request.user,
+        city_name=city
+    ).delete()
+
+    return JsonResponse({
+        "ok": True
+    })
+
+@login_required
+def get_saved_cities(request):
+
+    cities = SavedCity.objects.filter(
+        user=request.user
+    ).values_list("city_name", flat=True)
+
+    return JsonResponse({
+        "ok": True,
+        "cities": list(cities)
+    })
