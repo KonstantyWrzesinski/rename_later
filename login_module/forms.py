@@ -19,9 +19,31 @@ class LoginForm(forms.Form):
     )
 
 class RegisterForm(UserCreationForm):
+
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter username'
+        }),
+        help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'
+    )
+
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Enter password'
+        }),
+        help_text='Password must contain at least 8 characters and cannot be entirely numeric.'
+    )
+
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Confirm password'
+        }),
+        help_text='Enter the same password again for verification.'
+    )
+
     class Meta:
-        model=User
-        fields = ['username','password1','password2'] 
+        model = User
+        fields = ['username', 'password1', 'password2']
 
 
 # class UserPreferenceForm(forms.ModelForm):
