@@ -18,6 +18,8 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #4facfe, #00f2fe);
             background-attachment: fixed;
+            /* Płynne przejście przy zmianie motywu */
+            transition: background 0.4s ease, color 0.4s ease; 
         }
 
         nav {
@@ -25,6 +27,7 @@
             padding: 15px;
             display: flex;
             gap: 20px;
+            transition: background-color 0.4s ease;
         }
 
         nav a {
@@ -50,6 +53,7 @@
         button:hover {
             background: #16324f;
         }
+        
         input[type="text"],
         input[type="password"] {
             width: 100%;
@@ -66,10 +70,27 @@
         input[type="password"]:focus {
             box-shadow: 0 6px 16px rgba(0,0,0,0.18);
         }
+
+        /* --- STYLE DLA CIEMNEGO MOTYWU --- */
+        body.dark-theme {
+            background: #121212; /* Ciemne tło w całej aplikacji */
+            color: #e0e0e0; /* Jasny tekst na stronie */
+        }
+        
+        body.dark-theme nav, 
+        body.dark-theme .bg-light {
+            background-color: #1a1a1a !important; /* Ciemny pasek na górze */
+        }
+
+        body.dark-theme nav a {
+            color: #ffffff !important; 
+        }
+        
+        body.dark-theme .navbar-brand {
+            color: #4facfe !important; /* Niebieski napis Weather App na ciemnym */
+        }
     </style>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"  rel="stylesheet" />
-    <head>
-</head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -93,18 +114,41 @@
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+          <li class="nav-item d-flex align-items-center mr-3">
+            <button onclick="toggleDarkMode()" style="background: transparent; color: #555; border: 1px solid #ccc; padding: 4px 10px; border-radius: 5px; cursor: pointer;">🌙 Dark/Light</button>
+          </li>
           <li class="nav-item">
-            {%if request.user.is_authenticated %}
-  			      <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-  		      {%else%}
-  			      <a class="nav-link" href="{% url 'login' %}">Login</a>
-  		      {%endif%}
+            {% if request.user.is_authenticated %}
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
+            {% endif %}
           </li>
         </ul>
       </div>
     </nav>
-    <div class="container">{% block content %} {% endblock %}</div>
+    <div class="container mt-4">{% block content %} {% endblock %}</div>
+    
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" ></script>
+    
+    <script>
+        // Przy ładowaniu strony sprawdzamy, czy tryb ciemny był już włączony
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        function toggleDarkMode() {
+            // Włącza lub wyłącza klasę w HTML
+            document.body.classList.toggle('dark-theme');
+            
+            // Zapisuje wybór do pamięci przeglądarki
+            if (document.body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+    </script>
   </body>
 </html>
