@@ -23,11 +23,20 @@
         }
 
         nav {
-            background-color: #1e3a5f;
+            background: rgba(255, 255, 255, 0.9);
             padding: 15px;
+
             display: flex;
             gap: 20px;
-            transition: background-color 0.4s ease;
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            z-index: 1000;
+
+            backdrop-filter: blur(10px);
         }
 
         nav a {
@@ -93,7 +102,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <a class="navbar-brand" href="http://127.0.0.1:8000/">Weather App</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -127,7 +136,10 @@
         </ul>
       </div>
     </nav>
-    <div class="container mt-4">{% block content %} {% endblock %}</div>
+    <div style="padding-top:80px;">
+        {% block content %}
+        {% endblock %}
+    </div>
     
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" ></script>

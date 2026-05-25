@@ -3,100 +3,249 @@
 
 {% block content %}
 
-<div style="
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    min-height:80vh;
-">
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
 
-    <h1 style="margin-bottom:40px;">Weather App</h1>
+    .home-section {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .hero-title {
+        font-size: 64px;
+        color: white;
+        margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+        font-size: 22px;
+        color: white;
+        margin-bottom: 50px;
+    }
+
+    .scroll-arrow {
+        font-size: 42px;
+        color: white;
+        text-decoration: none;
+        animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(12px);
+        }
+    }
+
+    .popular-grid {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 35px;
+        max-width: 1100px;
+    }
+
+    .city-card {
+        background: rgba(255,255,255,0.25);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        width: 230px;
+        min-height: 210px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        transition: 0.3s;
+    }
+
+    .city-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    }
+
+    .city-card h3 {
+        margin-bottom: 18px;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 40px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        width: 500px;
+        max-width: 90%;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-card input {
+        border: none;
+        outline: none;
+        font-size: 18px;
+        padding: 14px 20px;
+        width: 100%;
+        border-radius: 40px;
+    }
+
+    .search-card button {
+        border: none;
+        background: #1e3a5f;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .weather-result-card {
+        margin-top: 35px;
+        background: white;
+        width: 420px;
+        max-width: 90%;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        text-align: center;
+    }
+
+    .fade-up {
+        animation: fadeUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(35px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<!-- SECTION 1: HERO -->
+<section class="home-section fade-up" id="hero">
+    <h1 class="hero-title">Weather App</h1>
+
+    <p class="hero-subtitle">
+        Check current weather conditions in selected regions.
+    </p>
+
+    <a href="#popular" class="scroll-arrow">↓</a>
+</section>
+
+<!-- SECTION 2: POPULAR CITIES FROM API -->
+<section class="home-section fade-up" id="popular">
+    <h1 style="color:white;">Weather in popular cities</h1>
+
+    <div class="popular-grid">
+
+        {% for city in popular_cities %}
+            <div class="city-card">
+                <h3>{{ city.city }}, {{ city.country }}</h3>
+
+                <p>
+                    Temperature:
+                    {{ city.temperature }}
+                    {{ city.temperature_unit }}
+                </p>
+
+                <p>
+                    Humidity:
+                    {{ city.humidity }}
+                    {{ city.humidity_unit }}
+                </p>
+
+                <p>
+                    Wind:
+                    {{ city.wind_speed }}
+                    {{ city.wind_speed_unit }}
+                </p>
+
+                <p>
+                    Condition:
+                    {{ city.weather_description }}
+                </p>
+            </div>
+        {% empty %}
+            <p style="color:white;">
+                Popular cities weather data is currently unavailable.
+            </p>
+        {% endfor %}
+
+    </div>
+
+    <a href="#search" class="scroll-arrow" style="margin-top:50px;">↓</a>
+</section>
+
+<!-- SECTION 3: SEARCH -->
+<section class="home-section fade-up" id="search">
+    <h1 style="color:white; margin-bottom:40px;">Search weather</h1>
 
     <form method="post" style="width:100%; display:flex; justify-content:center;">
         {% csrf_token %}
 
-        <div style="
-            display:flex;
-            align-items:center;
-            background:white;
-            border-radius:40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width:500px;
-            max-width:90%;
-            padding:5px;
-        ">
-            <input 
+        <div class="search-card">
+            <input
                 id="cityInput"
                 name="city"
-                type="text" 
+                type="text"
                 placeholder="Search for a city..."
-                style="
-                    border:none;
-                    outline:none;
-                    font-size:18px;
-                    padding:14px 20px;
-                    width:100%;
-                    border-radius:40px;
-                "
             >
 
-            <button type="submit" style="
-                border:none;
-                background:#1e3a5f;
-                color:white;
-                padding:12px 20px;
-                border-radius:30px;
-                cursor:pointer;
-                font-size:16px;
-            ">
+            <button type="submit">
                 Search
             </button>
         </div>
     </form>
 
-    <p id="loadingMsg" style="display:none; margin-top:20px; font-weight:bold;">
+    <p id="loadingMsg" style="display:none; margin-top:20px; font-weight:bold; color:white;">
         Loading weather data...
     </p>
 
-    <div id="weatherBox" style="
-        display:{% if weather or error %}block{% else %}none{% endif %};
-        margin-top:30px;
-        background:white;
-        width:420px;
-        max-width:90%;
-        padding:25px;
-        border-radius:20px;
-        box-shadow:0 4px 15px rgba(0,0,0,0.12);
-        text-align:center;
-    ">
-        {% if error %}
-            <p>{{ error }}</p>
-        {% endif %}
+    {% if error %}
+        <div class="weather-result-card">
+            <p style="color:red;">{{ error }}</p>
+        </div>
+    {% endif %}
 
-        {% if weather %}
+    {% if weather %}
+        <div id="weatherBox" class="weather-result-card">
             <h2 id="cityName">{{ weather.city }}, {{ weather.country }}</h2>
             <p id="temp">Temperature: {{ weather.temperature }} {{ weather.temperature_unit }}</p>
             <p id="humidity">Humidity: {{ weather.humidity }} {{ weather.humidity_unit }}</p>
             <p id="wind">Wind: {{ weather.wind_speed }} {{ weather.wind_speed_unit }}</p>
             <p id="condition">Condition: {{ weather.weather_description }}</p>
-        {% endif %}
-    </div>
-
-</div>
+        </div>
+    {% endif %}
+</section>
 
 <script>
 const form = document.querySelector("form");
 const loadingMsg = document.getElementById("loadingMsg");
 const weatherBox = document.getElementById("weatherBox");
 
-form.addEventListener("submit", function() {
-    loadingMsg.style.display = "block";
+if (form) {
+    form.addEventListener("submit", function() {
+        loadingMsg.style.display = "block";
 
-    if (weatherBox) {
-        weatherBox.style.display = "none";
-    }
-});
+        if (weatherBox) {
+            weatherBox.style.display = "none";
+        }
+    });
+}
 </script>
 
 {% endblock %}
