@@ -2,6 +2,7 @@ import json
 from urllib.parse import urlencode
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
+from datetime import datetime
 
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
@@ -89,13 +90,32 @@ def get_current_weather(city):
             "latitude": latitude,
             "longitude": longitude,
             "current": "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+            "daily": "weather_code,temperature_2m_max,temperature_2m_min",
             "timezone": "auto",
+            "forecast_days": 4,
         },
     )
 
     current = weather_data.get("current", {})
     units = weather_data.get("current_units", {})
     weather_code = current.get("weather_code")
+
+    daily = weather_data.get("daily", {})
+    forecast_list = []
+    if daily:
+        times = daily.get("time", [])
+        codes = daily.get("weather_code", [])
+        temps_max = daily.get("temperature_2m_max", [])
+        temps_min = daily.get("temperature_2m_min", [])
+
+        for i in range(1, min(4, len(times))):
+            date_obj = datetime.strptime(times[i], "%Y-%m-%d")
+            forecast_list.append({
+                "date": date_obj.strftime("%d.%m"),
+                "temp_max": round(temps_max[i]),
+                "temp_min": round(temps_min[i]),
+                "icon": WEATHER_ICONS.get(codes[i], "03d")
+            })
 
     return {
         "city": place.get("name"),
@@ -113,4 +133,5 @@ def get_current_weather(city):
         "weather_description": WEATHER_CODES.get(weather_code, "Brak opisu"),
         "icon": WEATHER_ICONS.get(weather_code, "03d"),
         "time": current.get("time"),
+        "forecast": forecast_list,
     }
