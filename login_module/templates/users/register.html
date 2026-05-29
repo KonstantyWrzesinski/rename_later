@@ -2,6 +2,37 @@
 
 {% block content %}
 
+<style>
+    .auth-card {
+        background: white;
+        padding: 40px;
+        border-radius: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        width: 430px;
+        max-width: 90%;
+    }
+
+    .auth-title {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #1e3a5f;
+    }
+
+    body.dark-theme .auth-card {
+        background: rgba(30, 41, 59, 0.85) !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.dark-theme .auth-title {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-theme .auth-card small {
+        color: #94a3b8 !important; 
+    }
+</style>
+
 <div style="
     display:flex;
     justify-content:center;
@@ -9,57 +40,46 @@
     min-height:75vh;
 ">
 
-    <div style="
-        background:white;
-        padding:40px;
-        border-radius:25px;
-        box-shadow:0 10px 25px rgba(0,0,0,0.15);
-        width:430px;
-        max-width:90%;
-    ">
+    <div class="auth-card">
 
-        <h2 style="
-            text-align:center;
-            margin-bottom:25px;
-            color:#1e3a5f;
-        ">
+        <h2 class="auth-title">
             Sign Up
         </h2>
-		
-		{% if form.errors %}
-    		<div style="
-        		background:#fee2e2;
-        		color:#991b1b;
-        		padding:15px;
-        		border-radius:15px;
-        		margin-bottom:20px;
-    		">
-        		{{ form.errors }}
-    		</div>
-		{% endif %}
         
-		<form method="POST" novalidate>
+        {% if form.errors %}
+            <div style="
+                background:#fee2e2;
+                color:#991b1b;
+                padding:15px;
+                border-radius:15px;
+                margin-bottom:20px;
+            ">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        
+        <form method="POST" novalidate>
             {% csrf_token %}
 
             <div style="margin-bottom:18px;">
                 {{ form.username }}
-				<small style="color:#666;">
-    				{{ form.username.help_text }}
-				</small>
+                <small style="color:#666;">
+                    {{ form.username.help_text }}
+                </small>
             </div>
 
             <div style="margin-bottom:18px;">
                 {{ form.password1 }}
-				<small style="color:#666;">
-    				{{ form.password1.help_text }}
-				</small>
+                <small style="color:#666;">
+                    {{ form.password1.help_text }}
+                </small>
             </div>
 
             <div style="margin-bottom:22px;">
                 {{ form.password2 }}
-				<small style="color:#666;">
-    				{{ form.password2.help_text }}
-				</small>	
+                <small style="color:#666;">
+                    {{ form.password2.help_text }}
+                </small>    
             </div>
 
             <button type="submit" style="
