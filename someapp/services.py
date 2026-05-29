@@ -3,7 +3,6 @@ from urllib.parse import urlencode
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
 
-
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 
@@ -29,10 +28,30 @@ WEATHER_CODES = {
     95: "Thunderstorm",
 }
 
+WEATHER_ICONS = {
+    0: "01d",
+    1: "02d",
+    2: "03d",
+    3: "04d",
+    45: "50d",
+    48: "50d",
+    51: "09d",
+    53: "09d",
+    55: "09d",
+    61: "10d",
+    63: "10d",
+    65: "10d",
+    71: "13d",
+    73: "13d",
+    75: "13d",
+    80: "09d",
+    81: "09d",
+    82: "09d",
+    95: "11d",
+}
 
 class WeatherServiceError(Exception):
     pass
-
 
 def fetch_json(base_url, params):
     url = f"{base_url}?{urlencode(params)}"
@@ -43,7 +62,6 @@ def fetch_json(base_url, params):
         raise WeatherServiceError("Błąd odpowiedzi z API pogodowego.")
     except URLError:
         raise WeatherServiceError("Nie udało się połączyć z API pogodowym.")
-
 
 def get_current_weather(city):
     geo_data = fetch_json(
@@ -93,5 +111,6 @@ def get_current_weather(city):
         "wind_speed_unit": units.get("wind_speed_10m", "km/h"),
         "weather_code": weather_code,
         "weather_description": WEATHER_CODES.get(weather_code, "Brak opisu"),
+        "icon": WEATHER_ICONS.get(weather_code, "03d"),
         "time": current.get("time"),
     }
