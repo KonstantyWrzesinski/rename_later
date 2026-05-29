@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 from .models import TodoItem
 from .forms import CityForm
 from .services import get_current_weather, WeatherServiceError
@@ -23,7 +22,7 @@ def home(request):
             except WeatherServiceError:
                 pass
 
-        cache.set("popular_cities", popular_cities, 300)  # Pobieranie Info z Api co 5 minut
+        cache.set("popular_cities", popular_cities, 300)
 
     if request.method == "POST" and form.is_valid():
         city = form.cleaned_data["city"]
