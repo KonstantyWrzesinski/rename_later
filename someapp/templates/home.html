@@ -105,4 +105,174 @@
         background: #1e3a5f;
         color: white;
         padding: 12px 20px;
-        border
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .weather-result-card {
+        margin-top: 35px;
+        background: white;
+        width: 420px;
+        max-width: 90%;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        text-align: center;
+    }
+    
+    /* Dodany cień do ikonek pogody, żeby białe chmury były widoczne */
+    .weather-icon {
+        filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.25));
+    }
+
+    .fade-up {
+        animation: fadeUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(35px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    body.dark-theme .search-card,
+    body.dark-theme .weather-result-card {
+        background: rgba(30, 41, 59, 0.85) !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.dark-theme .weather-result-card h2,
+    body.dark-theme .weather-result-card p {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-theme .search-card input {
+        background: transparent !important;
+        color: #e2e8f0 !important;
+    }
+</style>
+
+<section class="home-section fade-up" id="hero">
+    <h1 class="hero-title">Weather App</h1>
+
+    <p class="hero-subtitle">
+        Check current weather conditions in selected regions.
+    </p>
+
+    <a href="#popular" class="scroll-arrow">↓</a>
+</section>
+
+<section class="home-section fade-up" id="popular">
+    <h1 style="color:white;">Weather in popular cities</h1>
+
+    <div class="popular-grid">
+
+        {% for city in popular_cities %}
+            <div class="city-card">
+                <h3>{{ city.city }}, {{ city.country }}</h3>
+                
+                <img src="http://openweathermap.org/img/wn/{{ city.icon }}@2x.png" alt="Weather icon" class="weather-icon" style="width: 80px; height: 80px; margin: -5px 0;">
+
+                <p>
+                    Temperature:
+                    {{ city.temperature }}
+                    {{ city.temperature_unit }}
+                </p>
+
+                <p>
+                    Humidity:
+                    {{ city.humidity }}
+                    {{ city.humidity_unit }}
+                </p>
+
+                <p>
+                    Wind:
+                    {{ city.wind_speed }}
+                    {{ city.wind_speed_unit }}
+                </p>
+
+                <p>
+                    Condition:
+                    {{ city.weather_description }}
+                </p>
+            </div>
+        {% empty %}
+            <p style="color:white;">
+                Popular cities weather data is currently unavailable.
+            </p>
+        {% endfor %}
+
+    </div>
+
+    <a href="#search" class="scroll-arrow" style="margin-top:50px;">↓</a>
+</section>
+
+<section class="home-section fade-up" id="search">
+    <h1 style="color:white; margin-bottom:40px;">Search weather</h1>
+
+    <form method="post" style="width:100%; display:flex; justify-content:center;">
+        {% csrf_token %}
+
+        <div class="search-card">
+            <input
+                id="cityInput"
+                name="city"
+                type="text"
+                placeholder="Search for a city..."
+            >
+
+            <button type="submit">
+                Search
+            </button>
+        </div>
+    </form>
+
+    <p id="loadingMsg" style="display:none; margin-top:20px; font-weight:bold; color:white;">
+        Loading weather data...
+    </p>
+
+    {% if error %}
+        <div class="weather-result-card">
+            <p style="color:red;">{{ error }}</p>
+        </div>
+    {% endif %}
+
+    {% if weather %}
+        <div id="weatherBox" class="weather-result-card">
+            <h2 id="cityName" style="margin-bottom: 0;">{{ weather.city }}, {{ weather.country }}</h2>
+            
+            <img src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" alt="Weather icon" class="weather-icon" style="width: 100px; height: 100px; margin: 0 auto;">
+
+            <p id="temp">Temperature: {{ weather.temperature }} {{ weather.temperature_unit }}</p>
+            <p id="humidity">Humidity: {{ weather.humidity }} {{ weather.humidity_unit }}</p>
+            <p id="wind">Wind: {{ weather.wind_speed }} {{ weather.wind_speed_unit }}</p>
+            <p id="condition">Condition: {{ weather.weather_description }}</p>
+        </div>
+    {% endif %}
+</section>
+
+<script>
+const form = document.querySelector("form");
+const loadingMsg = document.getElementById("loadingMsg");
+const weatherBox = document.getElementById("weatherBox");
+
+if (form) {
+    form.addEventListener("submit", function() {
+        loadingMsg.style.display = "block";
+
+        if (weatherBox) {
+            weatherBox.style.display = "none";
+        }
+    });
+}
+</script>
+
+{% endblock %}
