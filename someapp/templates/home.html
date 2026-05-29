@@ -98,9 +98,10 @@
         padding: 14px 20px;
         width: 100%;
         border-radius: 40px;
+        background: transparent;
     }
 
-    .search-card button {
+    .search-card button[type="submit"] {
         border: none;
         background: #1e3a5f;
         color: white;
@@ -108,6 +109,22 @@
         border-radius: 30px;
         cursor: pointer;
         font-size: 16px;
+    }
+
+    /* Wygląd naszego nowego przycisku lokalizacji */
+    .location-btn {
+        background: transparent;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        padding: 5px 10px;
+        margin-right: 5px;
+        transition: transform 0.2s;
+        outline: none;
+    }
+
+    .location-btn:hover {
+        transform: scale(1.2);
     }
 
     .weather-result-card {
@@ -121,7 +138,6 @@
         text-align: center;
     }
     
-    /* Dodany cień do ikonek pogody, żeby białe chmury były widoczne */
     .weather-icon {
         filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.25));
     }
@@ -155,7 +171,6 @@
     }
 
     body.dark-theme .search-card input {
-        background: transparent !important;
         color: #e2e8f0 !important;
     }
 </style>
@@ -218,7 +233,7 @@
 <section class="home-section fade-up" id="search">
     <h1 style="color:white; margin-bottom:40px;">Search weather</h1>
 
-    <form method="post" style="width:100%; display:flex; justify-content:center;">
+    <form method="post" id="weatherForm" style="width:100%; display:flex; justify-content:center;">
         {% csrf_token %}
 
         <div class="search-card">
@@ -228,6 +243,10 @@
                 type="text"
                 placeholder="Search for a city..."
             >
+            
+            <button type="button" id="locationBtn" class="location-btn" title="Użyj mojej lokalizacji">
+                📍
+            </button>
 
             <button type="submit">
                 Search
@@ -260,16 +279,64 @@
 </section>
 
 <script>
-const form = document.querySelector("form");
+const form = document.getElementById("weatherForm");
 const loadingMsg = document.getElementById("loadingMsg");
 const weatherBox = document.getElementById("weatherBox");
+const locationBtn = document.getElementById("locationBtn");
+const cityInput = document.getElementById("cityInput");
 
+// Ukrywanie karty i pokazywanie wiadomości "Loading" podczas zwykłego szukania
 if (form) {
     form.addEventListener("submit", function() {
         loadingMsg.style.display = "block";
-
         if (weatherBox) {
             weatherBox.style.display = "none";
+        }
+    });
+}
+
+// Logika przycisku Geolokalizacji
+if (locationBtn) {
+    locationBtn.addEventListener("click", function() {
+        // Sprawdzamy czy przeglądarka wspiera lokalizację
+        if (navigator.geolocation) {
+            // Zmieniamy ikonę na "ładowanie"
+            locationBtn.innerHTML = "⏳"; 
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Korzystamy z darmowego API aby zamienić współrzędne na nazwę miasta
+                    fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=pl`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Pobieramy nazwę miasta z danych
+                        const cityName = data.city || data.locality;
+                        
+                        if (cityName) {
+                            // Wpisujemy miasto do paska wyszukiwania i wysyłamy formularz
+                            cityInput.value = cityName;
+                            loadingMsg.style.display = "block";
+                            form.submit();
+                        } else {
+                            alert("Udało się pobrać lokalizację, ale nie potrafimy dopasować do niej miasta.");
+                            locationBtn.innerHTML = "📍";
+                        }
+                    })
+                    .catch(error => {
+                        alert("Wystąpił błąd podczas pobierania nazwy miasta.");
+                        locationBtn.innerHTML = "📍";
+                    });
+                },
+                function(error) {
+                    alert("Odmówiono dostępu do lokalizacji lub wystąpił błąd.");
+                    locationBtn.innerHTML = "📍";
+                }
+            );
+        } else {
+            alert("Twoja przeglądarka nie wspiera funkcji geolokalizacji.");
         }
     });
 }
