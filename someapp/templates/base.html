@@ -16,19 +16,15 @@
         }
 
         body {
-            /* Nowocześniejsza czcionka */
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             
-            /* Łagodniejszy, nowoczesny gradient dla trybu jasnego (motyw dziennego nieba) */
             background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
             background-attachment: fixed;
-            color: #2d3748; /* Ciemnoszary zamiast smolistej czerni */
+            color: #2d3748;
             
-            /* Płynne przejścia */
             transition: background 0.5s ease, color 0.5s ease; 
         }
 
-        /* --- NAVBAR JASNY --- */
         nav {
             background: rgba(255, 255, 255, 0.85) !important;
             padding: 15px;
@@ -39,26 +35,25 @@
             z-index: 1000;
             
             backdrop-filter: blur(12px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); /* Delikatny cień oddzielający menu od tła */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
             transition: background 0.5s ease;
         }
 
         nav a.navbar-brand {
-            color: #1e3a8a !important; /* Ciemnoniebieski akcent dla logo */
+            color: #1e3a8a !important;
             font-weight: 800;
         }
 
         nav a.nav-link {
-            color: #4a5568 !important; /* Zgaszony ciemnoszary */
+            color: #4a5568 !important;
             font-weight: 600;
             transition: color 0.3s ease;
         }
 
         nav a.nav-link:hover {
-            color: #2563eb !important; /* Wyraźny niebieski przy najechaniu */
+            color: #2563eb !important;
         }
 
-        /* --- PRZYCISK ZMIANY MOTYWU --- */
         .theme-toggle-btn {
             background: transparent;
             color: #4a5568;
@@ -80,7 +75,6 @@
             color: #1e3a5f;
         }
         
-        /* --- FORMULARZE --- */
         input[type="text"],
         input[type="password"] {
             width: 100%;
@@ -101,34 +95,27 @@
             border-color: #66a6ff;
         }
 
-        /* =========================================
-           --- STYLE DLA CIEMNEGO MOTYWU --- 
-           ========================================= */
         
         body.dark-theme {
-            /* Głęboki, elegancki gradient (motyw nocny) zamiast płaskiego czarnego */
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            /* Miękki, "złamany" biały (slate-200) - nie męczy wzroku */
             color: #e2e8f0; 
         }
         
         body.dark-theme nav {
-            /* Ciemnogranatowy, półprzezroczysty pasek */
             background: rgba(15, 23, 42, 0.85) !important; 
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
         }
 
         body.dark-theme nav a.navbar-brand {
-            color: #38bdf8 !important; /* Jasnoniebieski akcent logo */
+            color: #38bdf8 !important;
         }
 
         body.dark-theme nav a.nav-link {
-            /* Zgaszony jasnoszary/niebieskawy - eliminuje efekt "żarówki" */
             color: #94a3b8 !important; 
         }
 
         body.dark-theme nav a.nav-link:hover {
-            color: #e2e8f0 !important; /* Delikatne rozjaśnienie przy hoverze */
+            color: #e2e8f0 !important;
         }
 
         body.dark-theme .theme-toggle-btn {
@@ -158,7 +145,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   </head>
   <body>
-    <!-- Usunąłem bg-light z klas Bootstrapa, żeby własne tło w CSS działało gładko w obu motywach -->
     <nav class="navbar navbar-expand-lg fixed-top">
       <a class="navbar-brand" href="http://127.0.0.1:8000/">Weather App</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -207,7 +193,6 @@
         const body = document.body;
         const themeBtn = document.querySelector('.theme-toggle-btn');
 
-        // Funkcja do aktualizacji ikony na przycisku
         function updateBtnIcon() {
             if (body.classList.contains('dark-theme')) {
                 themeBtn.innerHTML = '☀️ Light';
