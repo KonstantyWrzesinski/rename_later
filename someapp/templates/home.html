@@ -133,9 +133,25 @@
             transform: translateY(0);
         }
     }
+
+    body.dark-theme .search-card,
+    body.dark-theme .weather-result-card {
+        background: rgba(30, 41, 59, 0.85) !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.dark-theme .weather-result-card h2,
+    body.dark-theme .weather-result-card p {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-theme .search-card input {
+        background: transparent !important;
+        color: #e2e8f0 !important;
+    }
 </style>
 
-<!-- SECTION 1: HERO -->
 <section class="home-section fade-up" id="hero">
     <h1 class="hero-title">Weather App</h1>
 
@@ -146,7 +162,6 @@
     <a href="#popular" class="scroll-arrow">↓</a>
 </section>
 
-<!-- SECTION 2: POPULAR CITIES FROM API -->
 <section class="home-section fade-up" id="popular">
     <h1 style="color:white;">Weather in popular cities</h1>
 
@@ -190,7 +205,6 @@
     <a href="#search" class="scroll-arrow" style="margin-top:50px;">↓</a>
 </section>
 
-<!-- SECTION 3: SEARCH -->
 <section class="home-section fade-up" id="search">
     <h1 style="color:white; margin-bottom:40px;">Search weather</h1>
 
