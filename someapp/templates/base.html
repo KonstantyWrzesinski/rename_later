@@ -9,7 +9,6 @@
       {% endblock %}
     </title>
     <style>
-        /* --- BAZOWE USTAWIENIA --- */
         html, body {
             height: 100%;
             margin: 0;
@@ -17,11 +16,9 @@
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            
             background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
             background-attachment: fixed;
             color: #2d3748;
-            
             transition: background 0.5s ease, color 0.5s ease; 
         }
 
@@ -33,7 +30,6 @@
             left: 0;
             width: 100%;
             z-index: 1000;
-            
             backdrop-filter: blur(12px);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
             transition: background 0.5s ease;
@@ -52,6 +48,12 @@
 
         nav a.nav-link:hover {
             color: #2563eb !important;
+        }
+
+        nav a.nav-link.active-link {
+            color: #2563eb !important; 
+            font-weight: 800;
+            border-bottom: 3px solid #2563eb; 
         }
 
         .theme-toggle-btn {
@@ -95,7 +97,6 @@
             border-color: #66a6ff;
         }
 
-        
         body.dark-theme {
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             color: #e2e8f0; 
@@ -107,7 +108,7 @@
         }
 
         body.dark-theme nav a.navbar-brand {
-            color: #38bdf8 !important;
+            color: #38bdf8 !important; 
         }
 
         body.dark-theme nav a.nav-link {
@@ -115,7 +116,12 @@
         }
 
         body.dark-theme nav a.nav-link:hover {
-            color: #e2e8f0 !important;
+            color: #e2e8f0 !important; 
+        }
+
+        body.dark-theme nav a.nav-link.active-link {
+            color: #38bdf8 !important; 
+            border-bottom: 3px solid #38bdf8; 
         }
 
         body.dark-theme .theme-toggle-btn {
@@ -146,27 +152,32 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg fixed-top">
-      <a class="navbar-brand" href="http://127.0.0.1:8000/">Weather App</a>
+      <a class="navbar-brand" href="/">Weather App</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
+        
         <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="http://127.0.0.1:8000/">Home</a>
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == '/' %}active-link{% endif %}" href="/">Home</a>
           </li>
+          
           {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+            <a class="nav-link {% if 'dashboard' in request.path %}active-link{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
           </li>
           {% endif %}
+          
           <li class="nav-item">
-            <a class="nav-link" href="http://127.0.0.1:8000/about/">About</a>
+            <a class="nav-link {% if request.path == '/about/' %}active-link{% endif %}" href="/about/">About</a>
           </li>
+          
           <li class="nav-item">
-            <a class="nav-link" href="http://127.0.0.1:8000/team/">Team</a>
+            <a class="nav-link {% if request.path == '/team/' %}active-link{% endif %}" href="/team/">Team</a>
           </li>
         </ul>
+
         <ul class="navbar-nav ml-auto">
           <li class="nav-item d-flex align-items-center mr-3">
             <button class="theme-toggle-btn" onclick="toggleDarkMode()">🌙 Theme</button>
@@ -201,13 +212,11 @@
             }
         }
 
-        // Sprawdzanie trybu przy ładowaniu strony
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark-theme');
         }
         updateBtnIcon();
 
-        // Przełączanie trybu
         function toggleDarkMode() {
             body.classList.toggle('dark-theme');
             
