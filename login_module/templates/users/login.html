@@ -2,16 +2,48 @@
 
 {% block content %}
 
+<style>
+    .auth-card {
+        background: white;
+        padding: 40px;
+        border-radius: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        width: 380px;
+        max-width: 90%;
+    }
+
+    .auth-title {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #1e3a5f;
+    }
+
+    body.dark-theme .auth-card {
+        background: rgba(30, 41, 59, 0.85) !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.dark-theme .auth-title,
+    body.dark-theme .auth-card p {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-theme .auth-card a {
+        color: #38bdf8 !important;
+    }
+</style>
+
   {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
+    <p style="text-align: center; color: #ef4444; font-weight: bold;">Your username and password didn't match. Please try again.</p>
   {% endif %}
 
   {% if next %}
     {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
+      <p style="text-align: center;">Your account doesn't have access to this page. To proceed,
       please login with an account that has access.</p>
     {% else %}
-      <p>Please login to see this page.</p>
+      <p style="text-align: center;">Please login to see this page.</p>
     {% endif %}
   {% endif %}
 
@@ -22,16 +54,9 @@
     min-height:75vh;
 ">
 
-    <div style="
-        background:white;
-        padding:40px;
-        border-radius:25px;
-        box-shadow:0 10px 25px rgba(0,0,0,0.15);
-        width:380px;
-        max-width:90%;
-    ">
+    <div class="auth-card">
 
-        <h2 style="text-align:center; margin-bottom:25px; color:#1e3a5f;">
+        <h2 class="auth-title">
             Login
         </h2>
 
@@ -60,13 +85,11 @@
             </button>
 
             <input type="hidden" name="next" value="{{ next }}">
-            <p>Don't have an account? <a href="{%url 'register' %}">Register</a></p>
+            <p style="margin-top: 20px; text-align: center;">Don't have an account? <a href="{%url 'register' %}">Register</a></p>
         </form>
 
     </div>
 
 </div>
-
-  
 
 {% endblock %}
