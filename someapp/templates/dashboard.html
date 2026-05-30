@@ -3,6 +3,64 @@
 
 {% block content %}
 
+<style>
+    /* Klasy do obsługi motywów okienek pop-up (Modal) */
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 25px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal-title {
+        color: #1e3a5f;
+    }
+
+    .modal-input {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 14px 20px;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        outline: none;
+    }
+
+    .suggestion-item {
+        cursor: pointer;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        color: #333;
+    }
+
+    /* DARK THEME */
+    body.dark-theme .modal-content {
+        background: rgba(30, 41, 59, 0.95) !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.dark-theme .modal-title,
+    body.dark-theme #deleteCityText {
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-theme .modal-input {
+        background: rgba(15, 23, 42, 0.8) !important;
+        border: 1px solid #475569 !important;
+        color: #e2e8f0 !important;
+    }
+
+    body.dark-theme .suggestion-item {
+        color: #e2e8f0 !important;
+        border-bottom: 1px solid #475569 !important;
+    }
+
+    body.dark-theme .suggestion-item:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+</style>
+
 <div style="width:100%; padding:40px;">
 
     <h1 style="color:white; margin-bottom:30px;">
@@ -21,7 +79,6 @@
 
 </div>
 
-<!-- ADD CITY MODAL -->
 <div id="addCityModal" onclick="closeAddCityModal()" style="
     display:none;
     position:fixed;
@@ -35,26 +92,15 @@
     z-index:1000;
 ">
 
-    <div onclick="event.stopPropagation()" style="
-        background:white;
-        padding:30px;
-        border-radius:25px;
-        width:350px;
-        max-width:90%;
-        text-align:center;
-        box-shadow:0 8px 25px rgba(0,0,0,0.2);
-    ">
+    <div onclick="event.stopPropagation()" class="modal-content" style="width:350px; max-width:90%;">
 
-        <h2 style="margin-bottom:20px;">Add city</h2>
+        <h2 class="modal-title" style="margin-bottom:20px;">Add city</h2>
 
         <input
             id="cityInputModal"
+            class="modal-input"
             type="text"
             placeholder="Enter city name"
-            style="
-                width:100%;
-                margin-bottom:20px;
-            "
         >
 
         <div id="citySearchResults"></div>
@@ -75,7 +121,6 @@
 
 </div>
 
-<!-- DELETE CITY MODAL -->
 <div id="deleteCityModal" onclick="closeDeleteCityModal()" style="
     display:none;
     position:fixed;
@@ -89,21 +134,13 @@
     z-index:1000;
 ">
 
-    <div onclick="event.stopPropagation()" style="
-        background:white;
-        padding:30px;
-        border-radius:25px;
-        width:360px;
-        max-width:90%;
-        text-align:center;
-        box-shadow:0 8px 25px rgba(0,0,0,0.2);
-    ">
+    <div onclick="event.stopPropagation()" class="modal-content" style="width:360px; max-width:90%;">
 
-        <h2 style="margin-bottom:10px; color:#1e3a5f;">
+        <h2 class="modal-title" style="margin-bottom:10px;">
             Delete city
         </h2>
 
-        <p id="deleteCityText" style="margin-bottom:25px;">
+        <p id="deleteCityText" style="margin-bottom:25px; color:#333;">
             Are you sure?
         </p>
 
@@ -137,9 +174,6 @@
 
 </div>
 
-<!-- WEATHER MODAL -->
-<!-- WEATHER MODAL -->
-<!-- WEATHER MODAL -->
 <div id="dashboardWeatherBox" onclick="closeWeatherCard()" style="
     display:none;
     position:fixed;
@@ -153,10 +187,9 @@
     z-index:1000;
 ">
 
-    <div onclick="event.stopPropagation()" 
-        class="dashboard-weather-card">
+    <div onclick="event.stopPropagation()" class="modal-content dashboard-weather-card" style="width:450px; max-width:90%; position:relative;">
 
-        <button class="close-btn"
+        <button class="close-btn modal-title"
                 onclick="closeWeatherCard()"
                 style="
                     position:absolute;
@@ -170,17 +203,17 @@
             ✕
         </button>
 
-        <h2 id="dashboardCityName"></h2>
+        <h2 id="dashboardCityName" class="modal-title"></h2>
 
         <div id="dashboardIcon"
              class="weather-icon"
              style="font-size:70px; margin:15px 0 25px 0;">
         </div>
 
-        <p id="dashboardTemp"></p>
-        <p id="dashboardHumidity"></p>
-        <p id="dashboardWind"></p>
-        <p id="dashboardCondition"></p>
+        <p id="dashboardTemp" class="modal-title"></p>
+        <p id="dashboardHumidity" class="modal-title"></p>
+        <p id="dashboardWind" class="modal-title"></p>
+        <p id="dashboardCondition" class="modal-title"></p>
 
         <hr style="
             margin:30px 0;
@@ -188,9 +221,7 @@
             border-top:1px solid rgba(120,120,120,0.25);
         ">
 
-        <h3>3-Day Forecast</h3>
-
-        <div id="dashboardForecast" class="forecast-container"></div>
+        <h3 class="modal-title">3-Day Forecast</h3>
 
         <div id="dashboardForecast"
              class="forecast-container"
@@ -212,6 +243,7 @@ let cities = [];
 let cityToDelete = null;
 let citySuggestions = [];
 let citySearchTimeout = null;
+
 function formatCityName(city) {
     return city
         .toLowerCase()
@@ -249,7 +281,7 @@ function searchCitySuggestions() {
    const data = await response.json();
 
    if (!data.results || data.results.length === 0) {
-    resultsBox.innerHTML = "<p>Nie znaleziono miasta.</p>";
+    resultsBox.innerHTML = "<p class='modal-title'>Nie znaleziono miasta.</p>";
     return;
    }
 
@@ -270,12 +302,9 @@ function searchCitySuggestions() {
    });
 
    citySuggestions.forEach(function(city) {
-
     const result = document.createElement("div");
+    result.className = "suggestion-item";
     result.innerText = city.displayName;
-    result.style.cursor = "pointer";
-    result.style.padding = "8px";
-    result.style.borderBottom = "1px solid #ddd";
 
     result.onclick = function() {
      input.value = city.displayName;
@@ -286,7 +315,7 @@ function searchCitySuggestions() {
    });
 
   } catch (error) {
-   resultsBox.innerHTML = "<p>Błąd pobierania miast z API.</p>";
+   resultsBox.innerHTML = "<p class='modal-title'>Błąd pobierania miast z API.</p>";
    console.log("City search error:", error);
   }
  }, 300);
@@ -316,70 +345,62 @@ function renderCities() {
         card.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
 
         card.onclick = async function() {
-    document.getElementById("dashboardCityName").innerText = city;
-    document.getElementById("dashboardTemp").innerText = "Temperature: loading...";
-    document.getElementById("dashboardHumidity").innerText = "Humidity: loading...";
-    document.getElementById("dashboardWind").innerText = "Wind: loading...";
-    document.getElementById("dashboardCondition").innerText = "Condition: loading...";
+            document.getElementById("dashboardCityName").innerText = city;
+            document.getElementById("dashboardTemp").innerText = "Temperature: loading...";
+            document.getElementById("dashboardHumidity").innerText = "Humidity: loading...";
+            document.getElementById("dashboardWind").innerText = "Wind: loading...";
+            document.getElementById("dashboardCondition").innerText = "Condition: loading...";
 
-    document.getElementById("dashboardWeatherBox").style.display = "flex";
+            document.getElementById("dashboardWeatherBox").style.display = "flex";
 
-    try {
-        const response = await fetch("{% url 'dashboard_weather_api' %}?city=" + encodeURIComponent(city));
-        const data = await response.json();
+            try {
+                const response = await fetch("{% url 'dashboard_weather_api' %}?city=" + encodeURIComponent(city));
+                const data = await response.json();
 
-        if (!response.ok || !data.ok) {
-            throw new Error(data.error || "Weather API error");
-        }
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.error || "Weather API error");
+                }
 
-        const weather = data.weather;
-        const condition = weather.weather_description || weather.condition || "";
+                const weather = data.weather;
+                const condition = weather.weather_description || weather.condition || "";
 
-document.getElementById("dashboardCityName").innerText =
-    weather.city + ", " + weather.country;
+                document.getElementById("dashboardCityName").innerText = weather.city + ", " + weather.country;
+                document.getElementById("dashboardTemp").innerText = "Temperature: " + weather.temperature + " " + weather.temperature_unit;
+                document.getElementById("dashboardHumidity").innerText = "Humidity: " + weather.humidity + " " + weather.humidity_unit;
+                document.getElementById("dashboardWind").innerText = "Wind: " + weather.wind_speed + " " + weather.wind_speed_unit;
+                document.getElementById("dashboardCondition").innerText = "Condition: " + condition;
+                document.getElementById("dashboardIcon").innerText = getWeatherIcon(condition);
 
-document.getElementById("dashboardTemp").innerText =
-    "Temperature: " + weather.temperature + " " + weather.temperature_unit;
+                const forecastBox = document.getElementById("dashboardForecast");
+                forecastBox.innerHTML = "";
 
-document.getElementById("dashboardHumidity").innerText =
-    "Humidity: " + weather.humidity + " " + weather.humidity_unit;
+                if (weather.forecast) {
+                    weather.forecast.forEach(function(day) {
+                        const forecastCard = document.createElement("div");
+                        forecastCard.style.background = "rgba(120,120,120,0.1)";
+                        forecastCard.style.padding = "10px";
+                        forecastCard.style.borderRadius = "10px";
+                        forecastCard.style.textAlign = "center";
+                        forecastCard.style.width = "100px";
 
-document.getElementById("dashboardWind").innerText =
-    "Wind: " + weather.wind_speed + " " + weather.wind_speed_unit;
+                        forecastCard.innerHTML = `
+                            <h4 class="modal-title" style="margin:0 0 5px 0; font-size:15px;">${day.date}</h4>
+                            <div style="font-size:30px; margin-bottom:5px;">${getWeatherIcon(day.description)}</div>
+                            <p class="modal-title" style="margin:0; font-weight:bold; font-size:16px;">${day.temp_max}°</p>
+                            <p class="modal-title" style="margin:0; font-size:12px; opacity:0.7;">${day.temp_min}°</p>
+                        `;
 
-document.getElementById("dashboardCondition").innerText =
-    "Condition: " + condition;
+                        forecastBox.appendChild(forecastCard);
+                    });
+                }
 
-document.getElementById("dashboardIcon").innerText =
-    getWeatherIcon(condition);
-
-        const forecastBox = document.getElementById("dashboardForecast");
-        forecastBox.innerHTML = "";
-
-        if (weather.forecast) {
-            weather.forecast.forEach(function(day) {
-                const forecastCard = document.createElement("div");
-                forecastCard.className = "forecast-card";
-
-                forecastCard.innerHTML = `
-                    <h4>${day.date}</h4>
-                    <div style="font-size:40px;">${getWeatherIcon(day.description)}</div>
-                    <p class="temps">${day.temp_max}°</p>
-                    <p class="temps-min">${day.temp_min}°</p>
-                `;
-
-                forecastBox.appendChild(forecastCard);
-            });
-        }
-
-    } catch (error) {
-        document.getElementById("dashboardTemp").innerText = "Temperature: -";
-        document.getElementById("dashboardHumidity").innerText = "Humidity: -";
-        document.getElementById("dashboardWind").innerText = "Wind: -";
-        document.getElementById("dashboardCondition").innerText =
-            "Condition: " + error.message;
-    }
-};
+            } catch (error) {
+                document.getElementById("dashboardTemp").innerText = "Temperature: -";
+                document.getElementById("dashboardHumidity").innerText = "Humidity: -";
+                document.getElementById("dashboardWind").innerText = "Wind: -";
+                document.getElementById("dashboardCondition").innerText = "Condition: " + error.message;
+            }
+        };
 
         card.oncontextmenu = function(e) {
             e.preventDefault();
