@@ -138,6 +138,8 @@
 </div>
 
 <!-- WEATHER MODAL -->
+<!-- WEATHER MODAL -->
+<!-- WEATHER MODAL -->
 <div id="dashboardWeatherBox" onclick="closeWeatherCard()" style="
     display:none;
     position:fixed;
@@ -151,35 +153,55 @@
     z-index:1000;
 ">
 
-    <div onclick="event.stopPropagation()" style="
-        background:white;
-        width:420px;
-        max-width:90%;
-        padding:30px;
-        border-radius:25px;
-        text-align:center;
-        position:relative;
-        box-shadow:0 8px 25px rgba(0,0,0,0.2);
-    ">
+    <div onclick="event.stopPropagation()" 
+        class="dashboard-weather-card">
 
-        <button onclick="closeWeatherCard()" style="
-            position:absolute;
-            top:15px;
-            right:20px;
-            border:none;
-            background:none;
-            font-size:22px;
-            cursor:pointer;
-            color:#1e3a5f;
-        ">
+        <button class="close-btn"
+                onclick="closeWeatherCard()"
+                style="
+                    position:absolute;
+                    top:15px;
+                    right:20px;
+                    border:none;
+                    background:none;
+                    font-size:28px;
+                    cursor:pointer;
+                ">
             ✕
         </button>
 
         <h2 id="dashboardCityName"></h2>
+
+        <div id="dashboardIcon"
+             class="weather-icon"
+             style="font-size:70px; margin:15px 0 25px 0;">
+        </div>
+
         <p id="dashboardTemp"></p>
         <p id="dashboardHumidity"></p>
         <p id="dashboardWind"></p>
         <p id="dashboardCondition"></p>
+
+        <hr style="
+            margin:30px 0;
+            border:none;
+            border-top:1px solid rgba(120,120,120,0.25);
+        ">
+
+        <h3>3-Day Forecast</h3>
+
+        <div id="dashboardForecast" class="forecast-container"></div>
+
+        <div id="dashboardForecast"
+             class="forecast-container"
+             style="
+                display:flex;
+                justify-content:center;
+                gap:15px;
+                flex-wrap:wrap;
+                margin-top:20px;
+             ">
+        </div>
 
     </div>
 
@@ -311,21 +333,44 @@ function renderCities() {
         }
 
         const weather = data.weather;
+        const condition = weather.weather_description || weather.condition || "";
 
-        document.getElementById("dashboardCityName").innerText =
-            weather.city + ", " + weather.country;
+document.getElementById("dashboardCityName").innerText =
+    weather.city + ", " + weather.country;
 
-        document.getElementById("dashboardTemp").innerText =
-            "Temperature: " + weather.temperature + " " + weather.temperature_unit;
+document.getElementById("dashboardTemp").innerText =
+    "Temperature: " + weather.temperature + " " + weather.temperature_unit;
 
-        document.getElementById("dashboardHumidity").innerText =
-            "Humidity: " + weather.humidity + " " + weather.humidity_unit;
+document.getElementById("dashboardHumidity").innerText =
+    "Humidity: " + weather.humidity + " " + weather.humidity_unit;
 
-        document.getElementById("dashboardWind").innerText =
-            "Wind: " + weather.wind_speed + " " + weather.wind_speed_unit;
+document.getElementById("dashboardWind").innerText =
+    "Wind: " + weather.wind_speed + " " + weather.wind_speed_unit;
 
-        document.getElementById("dashboardCondition").innerText =
-            "Condition: " + weather.weather_description;
+document.getElementById("dashboardCondition").innerText =
+    "Condition: " + condition;
+
+document.getElementById("dashboardIcon").innerText =
+    getWeatherIcon(condition);
+
+        const forecastBox = document.getElementById("dashboardForecast");
+        forecastBox.innerHTML = "";
+
+        if (weather.forecast) {
+            weather.forecast.forEach(function(day) {
+                const forecastCard = document.createElement("div");
+                forecastCard.className = "forecast-card";
+
+                forecastCard.innerHTML = `
+                    <h4>${day.date}</h4>
+                    <div style="font-size:40px;">${getWeatherIcon(day.description)}</div>
+                    <p class="temps">${day.temp_max}°</p>
+                    <p class="temps-min">${day.temp_min}°</p>
+                `;
+
+                forecastBox.appendChild(forecastCard);
+            });
+        }
 
     } catch (error) {
         document.getElementById("dashboardTemp").innerText = "Temperature: -";
@@ -507,6 +552,22 @@ function getCSRFToken() {
     }
 
     return "";
+}
+function getWeatherIcon(condition) {
+    if (!condition) {
+        return "🌦️";
+    }
+
+    const text = condition.toLowerCase();
+
+    if (text.includes("clear")) return "☀️";
+    if (text.includes("cloud") || text.includes("overcast")) return "☁️";
+    if (text.includes("rain") || text.includes("drizzle")) return "🌧️";
+    if (text.includes("storm") || text.includes("thunder")) return "⛈️";
+    if (text.includes("snow")) return "❄️";
+    if (text.includes("mist") || text.includes("fog")) return "🌫️";
+
+    return "🌦️";
 }
 </script>
 
