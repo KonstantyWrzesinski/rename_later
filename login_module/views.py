@@ -4,17 +4,12 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import LoginForm, RegisterForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-#from .forms import UserPreferenceForm
-#from .models import UserPreference
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .models import SavedCity
 from django.http import JsonResponse
 from someapp.services import get_current_weather, WeatherServiceError
 
-# Create your views here.
-# def login(request):
-#     return render(request, "login.html")
 
 def sign_in(request):
 
@@ -62,22 +57,6 @@ def sign_up(request):
         else:
             return render(request, 'users/register.html', {'form': form}) 
 
-#@login_required
-# def dashboard(request):
-#     preference, created = UserPreference.objects.get_or_create(user=request.user)
-
-#     if request.method == "POST":
-#         form = UserPreferenceForm(request.POST, instance=preference)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('dashboard')
-#     else:
-#         form = UserPreferenceForm(instance=preference)
-
-#     return render(request, 'dashboard.html', {
-#         'form': form,
-#         'preference': preference
-#     })
 @login_required
 def dashboard(request):
     return render(request, 'dashboard.html')
